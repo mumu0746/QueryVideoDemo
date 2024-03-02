@@ -7,3 +7,4 @@
 <br/><br/>
 ## 后端部分
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;学习了C#语言以及SQL Server数据库。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数据库事先准备好了数据，然后利用C#代码和数据库建立连接，可以对数据库进行一系列操作。
