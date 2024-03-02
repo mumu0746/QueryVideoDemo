@@ -1,0 +1,100 @@
+
+.search{
+  width: 40%;
+  height: 50px;
+  margin-top: 16%;
+  margin-right: 10px;
+  /* border-radius: 10px; */
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 20px;
+  padding-left: 10px;
+  opacity: 0.5;
+}
+
+.go{
+  width: 10%;
+  height: 50px;
+  margin-top: 30px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 20px;
+  background-color: rgb(193, 108, 232);
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.go:hover{
+  background-color: #fff;
+}
+
+.go:active{
+  background-color: #ccc;
+}
+
+.search:hover{
+  border: 1px solid #fff;
+}
+
+.search:active{
+  border: 1px solid #ccc;
+}
+
+.fly{
+  position: absolute;
+  top: 320px;
+  right: 0;
+  animation: BirdsFly 12s linear infinite;
+}
+
+@keyframes BirdsFly{
+  0%{
+    transform: translate(100%,0%);
+  }
+  20%{
+    transform: translate(-120%,50%);
+  }
+  40%{
+    transform: translate(-340%,0%);
+  }
+  60%{
+    transform: translate(-560%,50%);
+  }
+  80%{
+    transform: translate(-780%,0%);
+  }
+  100%{
+    transform: translate(-1000%);
+  }
+}
+
+.menu{
+  margin-top: 0;
+  margin-left: 283px;
+  width: 40%;
+  font-size: 16px;
+  text-align: left;
+}
+
+.menu li{
+  list-style: none;
+  padding-left: 20px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  padding: 14px 0 14px 20px;
+  background-color: #fff;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.menu li:hover{
+  background-color: #7a7a7a;
+  opacity: 0.8;
+}
+
+.menu .more{
+  padding: 10px 0 10px 8px;
+  cursor: pointer;
+  font-size: 12px;
+}

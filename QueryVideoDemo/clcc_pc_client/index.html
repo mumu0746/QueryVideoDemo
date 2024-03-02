@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <title>常来瞅瞅</title>
+  <link rel="stylesheet" href="./css/index.css">
+  <link rel="stylesheet" href="./css/base.css">
+
+  <style>
+    #app{
+      background: url(./images/QueryBackground.jpg);
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      background-size: 100% 100%;
+      text-align: center;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div id="app">
+    <input 
+      type="text" 
+      placeholder="请输入您想要搜索的视频" 
+      class="search" 
+      @keyup.enter="getVideo(); queryInfo = ''" 
+      v-model="queryInfo"
+    >
+    <button class="go" @click="getVideo(); queryInfo = ''">搜索一下</button>
+    <!-- 测试videoList是否拿到后端数据：<h3 v-for="item in videoList">{{ item.id }}</h3> -->
+    <img src="./images/飞鸟.gif" alt="" width="150" class="fly">
+    <!-- 没办法了，只能硬写menuList第一项是0了hhhhhhhh，没想到还成功了 -->
+    <div class="menu" v-show="menuList[0] !== '0'">
+      <ul>
+        <!-- 可以限制v-for遍历几次，比如下面只会渲染6个li，并且是数组的前6个元素 -->
+        <!-- 点击li标签时，将queryInfo设置成当前li标签的内容，然后调用getVideo()方法，最后将queryInfo置为空,方便下一次查询 -->
+        <li
+         v-for="(item,index) in menuList" 
+         v-if="index < 6"
+         @click="queryInfo = item.videoName; getVideo(); queryInfo = ''" 
+        > 
+          {{ index + 1 }}. {{ item.videoName }}
+        </li>
+        <li class="more" v-show="isshow === true" @click="getVideo(); queryInfo = ''">查看更多></li>
+      </ul>
+    </div>
+  </div>
+</body>
+
+<script>
+  var app = new Vue({
+    el: '#app',
+    data: {
+      videoList: [],
+      menuList:[],
+      queryInfo: '',
+      isshow: false
+    },
+    methods:{
+      getVideo: function () {
+        axios.get("http://localhost:5040/ceshi/test?queryInfo=" + encodeURIComponent(this.queryInfo))
+        .then(function (response){
+          console.log(response.data);
+          if(Array.isArray(response.data)){
+            // queryInfo = ''  //每次查询完毕后，都将queryInfo置为空，以便下次查询
+            app.videoList = response.data  //这里必须用app.videoList，否则会报错，因为这里的this指向的是axios，而不是vue实例
+            app.saveVideoList()  //这里同理
+          }
+          else{
+            alert("没有查到相关视频，请重新输入")
+          }
+        }, function (err) {})
+        .catch(e => { console.log(e) })
+      },
+
+      //对数据进行持久化存储，以便在content.html中使用，因为在content.html中无法使用this.videoList
+      saveVideoList: function () {
+        localStorage.setItem("videoInfo", JSON.stringify(this.videoList))
+        console.log("视频数据已保存到本地存储")
+        // window.location.href = "./content.html"  此代码打开新页面时会覆盖原有的页面，因此使用下面的window.open()方法即可解决此问题
+        window.open("./content.html")
+      },
+
+      //从本地存储中加载视频数据
+      loadVideoList: function () {
+        if(localStorage.getItem("videoInfo") != null){
+          this.videoList = JSON.parse(localStorage.getItem("videoInfo"))
+          console.log("视频数据已从本地存储中读取")
+        }
+      },
+    },
+
+    mounted: function () {
+      //在页面加载时读取本地存储的视频数据
+      //在组件挂载完成后，调用加载方法，以便从本地存储中恢复数据
+      this.loadVideoList()
+    },
+
+    watch: {
+      //监视queryInfo的变化，如果发生变化，则调用getVideo()方法
+      queryInfo: function (newvalue, oldvalue) {
+        this.menuList = ['0']  //每次输入新的查询信息时，都将menuList的第一项置为['0']，以便判断要不要显示菜单
+        axios.get("http://localhost:5040/ceshi/test?queryInfo=" + encodeURIComponent(newvalue)) //这里的newvalue是queryInfo的新值
+        .then(function (response){
+          if(Array.isArray(response.data)){
+            app.menuList = response.data  //这里必须用app.menuList，否则会报错，因为这里的this指向的是axios，而不是vue实例
+            app.isshow = true  //每次真的查到信息时，都将isshow置为true，以便显示“查看更多”
+          }
+          else{
+            app.isshow = false  //每次没有查到信息时，都将isshow置为false，以便隐藏“查看更多”
+          }
+          console.log(app.menuList)
+        }, function (err) {})
+        .catch(e => { console.log(e) })
+      }
+    }
+  })
+</script>
+</html>

@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\QueryVideoDemo.props" />
+</Project>

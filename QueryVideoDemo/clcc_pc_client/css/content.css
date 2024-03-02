@@ -1,0 +1,224 @@
+
+/* -------------------------------------------------选 择 器------------------------------------------------------- */
+
+.videoDuration{
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding-top: 60px;
+}
+
+.videoDuration h3{
+  font-size: 24px;
+  color: #000000;
+  margin-bottom: 20px;
+}
+
+.videoDuration .queryButton{
+  width: 84px;
+  height: 40px;
+  margin-left: 6px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 18px;
+  background-color: rgb(173, 249, 158);
+  cursor: pointer;
+}
+
+.search{
+  position: absolute;
+  top: 64%;
+  left:64%;
+}
+
+.search input{
+  width: 240px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid #000000;
+  padding-left: 10px;
+  font-size: 16px;
+  color: #000000;
+  outline: none;
+  opacity: 0.5;
+}
+
+.timeButton{ 
+  width: 100px; 
+  height: 40px; 
+  border-radius: 10px; 
+  background-color: #fff; 
+  background-image: linear-gradient(to bottom, skyblue, pink); 
+  margin-bottom: 20px; 
+  margin-right: 10px; 
+  cursor: pointer; 
+  opacity: 0.8; 
+  border: none; 
+  color: #000; 
+  font-size: 16px; 
+  text-align: center; 
+  transition: opacity 0.3s ease, background-image 0.3s ease;
+ } 
+
+.timeButton:hover{ 
+  opacity: 1; 
+  background-image: linear-gradient(to bottom, #1de5e2, #b588f7);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+}
+
+.timeButton p{
+  font-size: 16px;
+  color: #000000;
+  line-height: 40px;
+}
+
+.mostButton{ 
+  width: 100px; 
+  height: 40px; 
+  border-radius: 10px; 
+  background-color: #fff; 
+  background-image: linear-gradient(to bottom, skyblue, pink); 
+  margin-bottom: 20px; 
+  margin-right: 10px; 
+  cursor: pointer; 
+  opacity: 0.8; 
+  border: none; 
+  color: #000; 
+  font-size: 16px; 
+  text-align: center; 
+  transition: opacity 0.3s ease, background-image 0.3s ease;
+ } 
+
+ .mostButton:hover{ 
+  opacity: 1; 
+  background-image: linear-gradient(to bottom, #1de5e2, #b588f7);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+}
+
+.mostButton p{
+  font-size: 16px;
+  color: #000000;
+  line-height: 40px;
+}
+
+/* -----------------------------------------------视 频 列 表 显 示 区----------------------------------------------------- */
+
+.show{
+  margin-top: 16%;
+}
+
+.show ul{
+  height: 1600px;
+}
+
+.show li{
+  position: relative;
+  float: left;
+  width: 300px;
+  height: 212px;
+  margin-top: 40px;
+  margin-right: 50px;
+  background-color: #fff;
+  opacity: 0.9;
+  overflow: hidden;
+}
+
+.show li img{
+  transition: all 0.5s;
+}
+
+.wenzi{
+  position: absolute;
+  left: 15px;
+  top: 145px;
+  width: 300px;
+  height: 107px;
+  transition: all 0.5s;
+}
+
+.show li:hover .wenzi{
+  transform: translateY(-40px);
+}
+
+.mask{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 212px;
+  background-image: linear-gradient(
+      transparent,
+      rgba(0,0,0,0.2)
+  );
+  opacity: 0;
+  transition: all 0.6s;
+}
+
+.show li:hover .mask{
+      opacity: 1;
+    }
+
+.show li:hover img{
+  transform: scale(1.15);
+}
+
+.video-item:hover .mask{
+  height: 100%;
+}
+
+.show li h3{
+  width: 95%;
+  position: absolute;
+  top: 20px;
+  left: -10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #000;
+}
+
+.show .like{
+  position: absolute;
+  left: 0;
+  top: 82px;
+  vertical-align: middle;
+  font-size: 14px;
+  color: #000;
+}
+
+.show .collect{
+  position: absolute;
+  left: 90px;
+  top: 82px;
+  vertical-align: middle;
+  color: #000;
+}
+
+.show .comment{
+  position: absolute;
+  left: 190px;
+  top: 82px;
+  vertical-align: middle;
+  color: #000;
+}
+
+
+.show li .duration{
+  position: absolute;
+  width: 80%;
+  top: 40%;
+  left: 50%;
+  transform: translate(-40%, -50%);
+  font-style: normal;
+  font-size: 20px;
+  font-weight: 700;
+  color: #000;
+  opacity: 0;
+  transition: all 0.5s;
+}
+
+.show li:hover .duration{
+  opacity: 1;
+}

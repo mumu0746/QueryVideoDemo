@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <title>欢迎欢迎~</title>
+  <link rel="stylesheet" href="./css/base.css">
+  <link rel="stylesheet" href="./css/common.css">
+  <link rel="stylesheet" href="./css/content.css">
+
+  <style>
+    #app{
+      background: url(./images/ResultBackground.jpg);
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      background-size: 100% 100%;
+      overflow: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <!-- 测试能否拿到本地存储的数据 -->
+    <!-- <p v-for="item in videoList">{{ item.id }}</p> -->
+
+    <!-- 选择器 -->
+    <div class="videoDuration wrapper">
+      <h3>全部时长</h3>
+      <div class="search">
+        <input @keyup.enter="getVideo" type="text" placeholder="还想看点什么呢？" v-model="queryInfo">
+        <button class="queryButton" @click="getVideo">搜索一下</button>
+      </div>
+      <button class="timeButton" @click="videoTimeFilter()"><p>显示全部</p></button>
+      <button class="timeButton" @click="videoTimeFilter(0,180)"><p>3分钟以内</p></button>
+      <button class="timeButton" @click="videoTimeFilter(180,600)"><p>3-10分钟</p></button>
+      <button class="timeButton" @click="videoTimeFilter(600,1200)"><p>10-20分钟</p></button>
+      <button class="timeButton" @click="videoTimeFilter(1200,1800)"><p>20-30分钟</p></button>
+      <button class="timeButton" @click="videoTimeFilter(1800,999999999999999)"><p>30分钟以上</p></button>
+      <h3>综合排序</h3>
+      <button class="mostButton" @click="videoMostFilter('releaseTime')"><p>最新发布</p></button>
+      <button class="mostButton" @click="videoMostFilter('collects')"><p>最多收藏</p></button>
+      <button class="mostButton" @click="videoMostFilter('comments')"><p>最多评论</p></button>
+    </div>
+
+    <!-- 视频列表展示区 -->
+    <div class="show wrapper">
+      <ul>
+        <li v-for="(item,index) in videoList" class="video-item">
+          <!-- 给a标签添加target="_blank"属性，可以在打开新页面的时候，不覆盖原有的页面 -->
+            <a :href="getVideoURL(item.videoURL)" target="_blank">
+                <img :src="getImage(item.id)" alt="" width="300">
+                <div class="wenzi">
+                  <!-- 这里的item.releaseTime是一个时间戳，需要转换为日期，但是数据库的时间戳记录的是秒，要转化成毫秒 -->
+                  <h3>{{ item.videoName }} —— {{ getVideoDate(item.releaseTime * 1000) }}</h3>
+                  <p class="like">♡喜欢:{{ item.likes }}</p>
+                  <p class="collect">☆收藏:{{ item.collects }}</p>
+                  <p class="comment">▤评论:{{ item.comments }}</p>
+                </div>
+                <i class="duration">时长：
+                  <!-- 小时 -->
+                  {{ ((item.videoDuration-item.videoDuration % 3600) / 3600) < 10 ? '0' + ((item.videoDuration-item.videoDuration % 3600) / 3600) : (item.videoDuration-item.videoDuration % 3600) / 3600 }}
+                  :
+                  <!-- 分钟 -->
+                  {{ ((item.videoDuration % 3600 - item.videoDuration % 60) / 60) < 10 ? '0' + ((item.videoDuration % 3600 - item.videoDuration % 60) / 60) : (item.videoDuration % 3600 - item.videoDuration % 60) / 60}}
+                  :
+                  <!-- 秒钟 -->
+                  {{ (item.videoDuration % 60) < 10 ? '0' + (item.videoDuration % 60) : (item.videoDuration % 60) }}
+                </i>
+                <div class="mask"></div>
+            </a>
+        </li>
+      </ul>
+    </div>
+    
+</body>
+
+<script>
+  var app = new Vue({
+    el: '#app',
+    data: {
+      videoList: [],
+      queryInfo: ''
+    },
+    methods: {
+      getVideoList: function () {
+        this.videoList = JSON.parse(localStorage.getItem("videoInfo"))
+        console.log(this.videoList)
+      },
+      getImage: function (id) {
+        return `./images/${id}.png`
+      },
+      getVideoURL: function (url) {
+        return url
+      },
+      videoTimeFilter: function (min, max) {
+        //每次调用这个方法时，必须让videoList重新赋值，否则有BUG
+        this.getVideoList()
+        if (min == undefined && max == undefined) {
+          //当没有传入参数时，显示全部视频
+          this.getVideoList()
+        } else {
+          //当传入参数时，根据视频时长进行筛选
+          this.videoList = this.videoList.filter(item => {
+            return item.videoDuration >= min && item.videoDuration < max
+          })
+        }
+      },
+      videoMostFilter: function (str) {
+        //每次调用这个方法时，必须让videoList重新赋值，否则有BUG
+        this.getVideoList()
+        //根据传入的参数进行具体的排序
+        if(str == 'releaseTime'){
+          //根据视频的发布时间进行排序
+          this.videoList.sort((a, b) => {
+            return b.releaseTime - a.releaseTime
+          })
+        }else if(str == 'collects'){
+          //根据视频的收藏数进行排序
+          this.videoList.sort((a, b) => {
+            return b.collects - a.collects
+          })
+        }else if(str == 'comments'){
+          //根据视频的评论数进行排序
+          this.videoList.sort((a, b) => {
+            return b.comments - a.comments
+          })
+        }
+      },
+      getVideoDate: function (releaseTime) {
+        //根据发布时间戳获取发布日期
+        var date = new Date(releaseTime)
+        var year = date.getFullYear()
+        var month = date.getMonth() + 1
+        var day = date.getDate()
+        return `${year}年${month}月${day}日`
+      },
+
+      // -------------------------------------------------------------------------
+
+      getVideo: function () {
+        axios.get("http://localhost:5040/ceshi/test?queryInfo=" + encodeURIComponent(this.queryInfo))
+        .then(function (response){
+          console.log(response.data);
+          if(Array.isArray(response.data)){
+            app.videoList = response.data  //这里必须用app.videoList，否则会报错，因为这里的this指向的是axios，而不是vue实例
+            app.saveVideoList()  //这里同理
+          }
+        }, function (err) { })
+        .catch(e => { console.log(e); })
+      },
+
+      //对数据进行持久化存储，以便在content.html中使用，因为在content.html中无法使用this.videoList
+      saveVideoList: function () {
+        localStorage.setItem("videoInfo", JSON.stringify(this.videoList))
+        console.log("视频数据已保存到本地存储")
+        window.location.href = "./content.html"  
+        // window.open("./content.html")  //这个页面就不用多加载一页了，可以选择覆盖
+      },
+
+      //从本地存储中加载视频数据
+      loadVideoList: function () {
+        if(localStorage.getItem("videoInfo") != null){
+          this.videoList = JSON.parse(localStorage.getItem("videoInfo"))
+          console.log("视频数据已从本地存储中读取")
+        }
+      }
+    },
+    created: function () {
+      this.getVideoList()  //在页面加载时调用getVideoList()方法，从本地存储中加载视频数据
+    }
+  })
+</script>
+
+</html>
